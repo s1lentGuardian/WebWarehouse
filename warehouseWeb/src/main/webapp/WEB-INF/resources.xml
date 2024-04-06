@@ -1,0 +1,10 @@
+<?xml version="1.0" ?>
+<resources>
+    <Resource id="jdbc/warehouseDataSource" type="javax.sql.DataSource" name="jdbc/warehouseDataSource">
+        jdbcDriver = org.postgresql.Driver
+        jdbcUrl = jdbc:postgresql://localhost:5432/warehouse
+        jtaManaged = true <!-- Автоматичне керування транзакціями (через JTA) -->
+        userName = postgres
+        password = 1234
+    </Resource>
+</resources>

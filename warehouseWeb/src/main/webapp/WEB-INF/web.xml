@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app>
+    <display-name>Warehouse Web Project</display-name>
+
+    <!-- Вмикаємо hot deploy у TomEE -->
+    <servlet>
+        <servlet-name>jsp</servlet-name>
+        <servlet-class>org.apache.jasper.servlet.JspServlet</servlet-class>
+        <init-param>
+            <param-name>development</param-name>
+            <param-value>true</param-value>
+        </init-param>
+    </servlet>
+</web-app>
