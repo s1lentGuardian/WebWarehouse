@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app>
     <display-name>Warehouse Web Project</display-name>
+    <welcome-file-list>
+        <!-- При зверненні до адреси http://localhost:8080/warehouse-web, вебконтейнер
+            відкриє сторінку homePage.html -->
+        <welcome-file>homePage.html</welcome-file>
+    </welcome-file-list>
 
     <!-- Вмикаємо hot deploy у TomEE -->
     <servlet>
@@ -11,4 +16,53 @@
             <param-value>true</param-value>
         </init-param>
     </servlet>
+
+    <!-- Прописуємо наш сервлет -->
+    <servlet>
+        <display-name>Goods Page Servlet</display-name>
+        <servlet-name>GoodsPageServlet</servlet-name>
+        <servlet-class>org.kharkiv.khpi.servlet.GoodsPageServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <display-name>Warehouse Page Servlet</display-name>
+        <servlet-name>WarehousePageServlet</servlet-name>
+        <servlet-class>org.kharkiv.khpi.servlet.WarehousePageServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <display-name>Car Page Servlet</display-name>
+        <servlet-name>CarPageServlet</servlet-name>
+        <servlet-class>org.kharkiv.khpi.servlet.CarPageServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <display-name>Transportation Page Servlet</display-name>
+        <servlet-name>TransportationPageServlet</servlet-name>
+        <servlet-class>org.kharkiv.khpi.servlet.TransportationPageServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <display-name>Supplier Page Servlet</display-name>
+        <servlet-name>SupplierPageServlet</servlet-name>
+        <servlet-class>org.kharkiv.khpi.servlet.SupplierPageServlet</servlet-class>
+    </servlet>
+
+    <!-- Ставимо відповідність між сервлетом і URL'ом -->
+    <servlet-mapping>
+        <servlet-name>GoodsPageServlet</servlet-name>
+        <url-pattern>/goodsPage</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>WarehousePageServlet</servlet-name>
+        <url-pattern>/warehousePage</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>CarPageServlet</servlet-name>
+        <url-pattern>/carPage</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>TransportationPageServlet</servlet-name>
+        <url-pattern>/transportationPage</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>SupplierPageServlet</servlet-name>
+        <url-pattern>/supplierPage</url-pattern>
+    </servlet-mapping>
 </web-app>
