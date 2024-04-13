@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Home Page</title>
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            background-image: url('https://www.amsc-usa.com/wp-content/uploads/2023/03/small-warehouse-2.jpg');
+            background-size: 50%; /* Уменьшаем размер фонового изображения до 50% */
+            background-position: center;
+            background-repeat: no-repeat; /* Запрещаем повторение фонового изображения */
+
+        }
+
+        h1 {
+            font-size: 36px;
+            margin-bottom: 30px;
+            color: #fff; /* Цвет текста белый для контраста */
+        }
+
+        .links {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        a {
+            margin: 10px;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        a:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="links">
+        <a href="goodsPage">Goods</a>
+        <a href="warehousePage">Warehouses</a>
+        <a href="carPage">Cars</a>
+        <a href="transportationPage">Transportations</a>
+    </div>
+</div>
+</body>
+</html>
