@@ -1,14 +1,21 @@
 package org.kharkiv.khpi.servlet;
 
+import jakarta.inject.Inject;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.kharkiv.khpi.model.Car;
+import org.kharkiv.khpi.model.service.CarService;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.List;
 
 public class CarPageServlet extends HttpServlet {
+
+    @Inject
+    private CarService carService;
 
     public CarPageServlet() {
         super();
@@ -18,14 +25,25 @@ public class CarPageServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("text/html; charset=UTF-8");
 
-        String html = getHtml();
+
+
+
+        List<Car> cars = carService.findAllCars();
+        String html = getHtml(cars);
+
+
 
         PrintWriter pw = response.getWriter();
         pw.write(html);
         pw.close();
     }
 
-    private String getHtml() {
+    private String getHtml(List<Car> cars) {
+        StringBuilder outStr = new StringBuilder();
+        for (Car car : cars) {
+            outStr.append("<tr><td>").append(car.getMake()).append("</td>");
+        }
+
         return """
                 <!DOCTYPE html>
                 <html lang="en">
@@ -134,20 +152,7 @@ public class CarPageServlet extends HttpServlet {
                         </tr>
                         </thead>
                         <tbody>
-                        <tr>
-                            <td><input type="checkbox"></td>
-                            <td>1</td>
-                            <td>Opel</td>
-                            <td>Van</td>
-                            <td>АХ1010ІС</td>
-                        </tr>
-                        <tr>
-                            <td><input type="checkbox"></td>
-                            <td>2</td>
-                            <td>Mercedes Benz</td>
-                            <td>Van</td>
-                            <td>АХ4744CV</td>
-                        </tr>
+                        {cars}
                         </tbody>
                     </table>
                                 
@@ -229,6 +234,6 @@ public class CarPageServlet extends HttpServlet {
                 </body>
                 </html>
                                 
-                """;
+                """.replace("{cars}", outStr.toString());
     }
 }
