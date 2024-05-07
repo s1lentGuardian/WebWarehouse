@@ -43,6 +43,31 @@
         <servlet-name>SupplierPageServlet</servlet-name>
         <servlet-class>org.kharkiv.khpi.servlet.SupplierPageServlet</servlet-class>
     </servlet>
+    <servlet>
+        <display-name>Car Test Servlet</display-name>
+        <servlet-name>CarTestServlet</servlet-name>
+        <servlet-class>org.kharkiv.khpi.servlet.jpatest.CarTestServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <display-name>Goods Test Servlet</display-name>
+        <servlet-name>GoodsTestServlet</servlet-name>
+        <servlet-class>org.kharkiv.khpi.servlet.jpatest.GoodsTestServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <display-name>Supplier Test Servlet</display-name>
+        <servlet-name>SupplierTestServlet</servlet-name>
+        <servlet-class>org.kharkiv.khpi.servlet.jpatest.SupplierTestServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <display-name>Warehouse Test Servlet</display-name>
+        <servlet-name>WarehouseTestServlet</servlet-name>
+        <servlet-class>org.kharkiv.khpi.servlet.jpatest.WarehouseTestServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <display-name>Transportation Test Servlet</display-name>
+        <servlet-name>TransportationTestServlet</servlet-name>
+        <servlet-class>org.kharkiv.khpi.servlet.jpatest.TransportationTestServlet</servlet-class>
+    </servlet>
 
     <!-- Ставимо відповідність між сервлетом і URL'ом -->
     <servlet-mapping>
@@ -64,5 +89,25 @@
     <servlet-mapping>
         <servlet-name>SupplierPageServlet</servlet-name>
         <url-pattern>/supplierPage</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>CarTestServlet</servlet-name>
+        <url-pattern>/carTest</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>GoodsTestServlet</servlet-name>
+        <url-pattern>/goodsTest</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>SupplierTestServlet</servlet-name>
+        <url-pattern>/supplierTest</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>WarehouseTestServlet</servlet-name>
+        <url-pattern>/warehouseTest</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>TransportationTestServlet</servlet-name>
+        <url-pattern>/transportationTest</url-pattern>
     </servlet-mapping>
 </web-app>
