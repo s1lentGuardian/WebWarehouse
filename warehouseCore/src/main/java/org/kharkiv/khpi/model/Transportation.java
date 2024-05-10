@@ -38,6 +38,9 @@ public class Transportation {
     @JoinColumn(name = "bring_to_warehouse_id")
     private Warehouse bringToWarehouse;
 
+    @Column(name = "goods_count")
+    private Integer count;
+
     @Column(name = "date")
     private LocalDate date;
 
@@ -87,6 +90,14 @@ public class Transportation {
 
     public void setDate(LocalDate date) {
         this.date = date;
+    }
+
+    public Integer getCount() {
+        return count;
+    }
+
+    public void setCount(Integer count) {
+        this.count = count;
     }
 
     @Override
