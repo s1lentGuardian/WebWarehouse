@@ -1,7 +1,17 @@
-<!DOCTYPE html>
+<%@ page import="java.util.List" %>
+<%@ page import="org.kharkiv.khpi.model.Warehouse" %>
+<%@ page import="org.kharkiv.khpi.model.Goods" %>
+
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+
+<%
+    List<Warehouse> warehouses = (List<Warehouse>) request.getAttribute("warehouses");
+%>
+<%
+    List<Goods> goods = (List<Goods>) request.getAttribute("goodsCollection");
+%>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
     <title>Goods Page</title>
     <style>
         body, html {
@@ -42,8 +52,8 @@
             top: 0;
             width: 100%;
             height: 100%;
-            overflow: auto;
-            background-color: rgba(0,0,0,0.4);
+            overflow: auto; /* Добавлено */
+            background-color: rgba(0, 0, 0, 0.4);
         }
 
         .modal-content {
@@ -52,7 +62,9 @@
             padding: 20px;
             border: 1px solid #888;
             width: 60%;
-            box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+            max-height: 70vh; /* Добавлено */
+            overflow-y: auto; /* Добавлено */
         }
 
         form label, form input {
@@ -97,56 +109,53 @@
             <th> </th>
             <th>Айді</th>
             <th>Назва</th>
-            <th>Айді товарів</th>
-            <th>Країна</th>
+            <th>Місто</th>
+            <th>Адреса</th>
         </tr>
         </thead>
         <tbody>
+        <%
+            for (Warehouse warehouse : warehouses)
+            {
+        %>
         <tr>
-            <td><input type="checkbox"></td>
-            <td>1</td>
-            <td>А</td>
-            <td>1,2</td>
-            <td>Україна</td>
+            <td><input type="checkbox" value="<%= warehouse.getWarehouseId()%>"></td>
+            <td><%= warehouse.getWarehouseId()%></td>
+            <td><%= warehouse.getName()%></td>
+            <td><%= warehouse.getCity()%></td>
+            <td><%= warehouse.getAddressLocation()%></td>
         </tr>
-        <tr>
-            <td><input type="checkbox"></td>
-            <td>2</td>
-            <td>B</td>
-            <td>3</td>
-            <td>Україна</td>
-        </tr>
-        <tr>
-            <td><input type="checkbox"></td>
-            <td>3</td>
-            <td>C</td>
-            <td></td>
-            <td>Україна</td>
-        </tr>
+        <%
+            }
+        %>
         </tbody>
     </table>
 
     <div class="btn-group">
-        <button type="button" class="btn btn-success" id="showFormBtn">Додати</button>
-        <button type="button" class="btn btn-danger">Видалити</button>
+        <button type="submit" class="btn btn-success" id="showFormBtn">Додати</button>
+
+        <form method="post" action="warehouses">
+            <input type="hidden" name="ACTION" value="REMOVE">
+            <input id="warehouseIds" name="warehouseIds" type="hidden">
+            <button type="submit" class="btn btn-danger" id="deleteBtn">Видалити</button>
+        </form>
         <button type="button" class="btn btn-primary">Оновити</button>
         <button type="button" class="btn btn-info">Додаткова Інформація</button>
-
     </div>
 
     <div id="myModal" class="modal">
         <div class="modal-content">
-            <form>
+            <form method="post" action="warehouses">
                 <label for="warName">Назва складу</label>
                 <input id="warName" name="warName"><br>
 
                 <label for="goodsId">Айді товарів:</label>
                 <select id="goodsId" name="goodsId">
-                    <option>1</option>
-                    <option>2</option>
-                    <option>3</option>
-                </select><br>
-
+                    <% for(Goods goodsItem : goods) { %>
+                    <option value="<%= goodsItem.getGoodsId() %>"><%= goodsItem.getName() %></option>
+                    <% } %>
+                </select>
+                <br>
 
                 <label for="numberOfPlaces">Кількість місць</label>
                 <input id="numberOfPlaces" name="numberOfPlaces"><br>
@@ -219,6 +228,27 @@
 
 
 <script>
+    //DELETE
+    document.getElementById("deleteBtn").addEventListener("click", function () {
+        var checkboxes = document.querySelectorAll('input[type="checkbox"]:checked');
+        var warehouseIds = [];
+        checkboxes.forEach(function (checkbox) {
+            warehouseIds.push(checkbox.value);
+        });
+
+        if (warehouseIds.length === 0) {
+            alert("Виберіть Склади для видалення.");
+            return;
+        }
+
+        document.getElementById("warehouseIds").value = warehouseIds.join(';');
+        document.querySelector('form').submit();
+    });
+
+
+
+
+
     // Оголошуємо модальне вікно як змінну, щоб мати до нього доступ
     var modal = document.getElementById("myModal");
 
