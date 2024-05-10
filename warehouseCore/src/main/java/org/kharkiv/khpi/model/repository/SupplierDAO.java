@@ -59,7 +59,11 @@ public class SupplierDAO {
     @ return створена або збережена сутність
      */
     public Supplier save(Supplier supplier) {
-        entityManager.persist(supplier);
+        if(supplier.getSupplierId() == null)
+            entityManager.persist(supplier);
+        else
+            entityManager.merge(supplier);
+
         return supplier;
     }
 
