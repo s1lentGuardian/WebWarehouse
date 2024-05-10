@@ -31,7 +31,7 @@ public class Goods {
     @Column(name = "price")
     private BigDecimal price;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "supplier_id")
     private Supplier supplier;
 
