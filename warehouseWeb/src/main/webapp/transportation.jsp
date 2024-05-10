@@ -1,7 +1,19 @@
-<!DOCTYPE html>
+<%@ page import="java.util.List" %>
+<%@ page import="org.kharkiv.khpi.model.Transportation" %>
+<%@ page import="org.kharkiv.khpi.model.Car" %>
+<%@ page import="org.kharkiv.khpi.model.Goods" %>
+<%@ page import="org.kharkiv.khpi.model.Warehouse" %>
+
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+
+<%
+    List<Transportation> transportations = (List<Transportation>) request.getAttribute("transportations");
+    List<Car> cars = (List<Car>) request.getAttribute("carsCollection");
+    List<Goods> goods = (List<Goods>) request.getAttribute("goodsList");
+    List<Warehouse> warehouses = (List<Warehouse>) request.getAttribute("warehouseCollection");
+%>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
     <title>Goods Page</title>
     <style>
         body, html {
@@ -104,24 +116,46 @@
             <th>Назва товару</th>
             <th>Загрузка</th>
             <th>Розвантаження</th>
+            <th>Кількість товару</th>
             <th>Дата</th>
         </tr>
         </thead>
         <tbody>
+        <%
+            for (Transportation transportation : transportations)
+            {
+        %>
         <tr>
-            <td><input type="checkbox"></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td><input type="checkbox" value="<%= transportation.getTransportationId()%>"></td>
+            <td><%= transportation.getTransportationId()%></td>
+            <td><%= transportation.getCar().getLicensePlateNumber()%></td>
+            <%
+                for (Goods warehouseGoods : transportation.getGoods())
+                {
+            %>
+            <td><%= warehouseGoods.getName()%></td>
+            <%
+                }
+            %>
+            <td><%= transportation.getPickUpFromWarehouse().getName()%></td>
+            <td><%= transportation.getBringToWarehouse().getName()%></td>
+            <td><%= transportation.getCount()%></td>
+            <td><%= transportation.getDate()%></td>
         </tr>
+        <%
+            }
+        %>
         </tbody>
     </table>
     <div class="btn-group">
         <button type="button" class="btn btn-success" id="showFormBtn">Додати</button>
-        <button type="button" class="btn btn-danger">Видалити</button>
+
+        <form method="post" action="transportations">
+            <input type="hidden" name="ACTION" value="REMOVE">
+            <input id="transportationIds" name="transportationIds" type="hidden">
+            <button type="button" class="btn btn-danger" id="deleteBtn">Видалити</button>
+        </form>
+
         <button type="button" class="btn btn-primary">Оновити</button>
         <button type="button" class="btn btn-info">Додаткова Інформація</button>
 
@@ -129,33 +163,39 @@
 
     <div id="myModal" class="modal">
         <div class="modal-content">
-            <form>
+            <form method="post" action="transportations">
                 <label for="carId">Айді машини</label>
                 <select id="carId" name="carId">
-                    <option>1</option>
-                    <option>2</option>
-                    <option>3</option>
+                    <% for(Car car : cars) { %>
+                    <option value="<%= car.getId() %>"><%= car.getLicensePlateNumber() %></option>
+                    <% } %>
                 </select><br>
-                <label for="goodsId">Айді товарів</label>
+                <label for="goodsId">Товар</label>
                 <select id="goodsId" name="goodsId">
-                    <option>1</option>
-                    <option>2</option>
-                    <option>3</option>
+                    <% for(Goods goodsItem : goods) { %>
+                    <option value="<%= goodsItem.getGoodsId() %>"><%= goodsItem.getName() %></option>
+                    <% } %>
                 </select><br>
+
+                <label for="count">Кількість товару</label>
+                <input id="count" name="count"><br>
 
                 <label for="pickFromWar">Загрузка з складу</label>
                 <select id="pickFromWar" name="pickFromWar">
-                    <option>1</option>
-                    <option>2</option>
-                    <option>3</option>
+                    <% for(Warehouse pickFromWar : warehouses) { %>
+                    <option value="<%= pickFromWar.getWarehouseId() %>"><%= pickFromWar.getName() %></option>
+                    <% } %>
                 </select><br>
 
-                <label for="bringFromWar">Розвантаження у склад</label>
-                <select id="bringFromWar" name="bringFromWar">
-                    <option>1</option>
-                    <option>2</option>
-                    <option>3</option>
+                <label for="bringToWar">Розвантаження у склад</label>
+                <select id="bringToWar" name="bringToWar">
+                    <% for(Warehouse bringToWar : warehouses) { %>
+                    <option value="<%= bringToWar.getWarehouseId() %>"><%= bringToWar.getName() %></option>
+                    <% } %>
                 </select><br>
+
+                <label for="date">Дата (у форматі рік-місяць-день)</label>
+                <input id="date" name="date"><br>
 
                 <button type="submit" class="btn btn-primary d-inline-block">Створити</button>
             </form>
@@ -185,6 +225,28 @@
 
 
 <script>
+    //DELETE
+    document.getElementById("deleteBtn").addEventListener("click", function () {
+        var checkboxes = document.querySelectorAll('input[type="checkbox"]:checked');
+        var transportationIds = [];
+        checkboxes.forEach(function (checkbox) {
+            transportationIds.push(checkbox.value);
+        });
+
+        if (transportationIds.length === 0) {
+            alert("Виберіть перевезення для видалення.");
+            return;
+        }
+
+        document.getElementById("transportationIds").value = transportationIds.join(';');
+        document.querySelector('form').submit();
+    });
+
+
+
+
+
+
     // Оголошуємо модальне вікно як змінну, щоб мати до нього доступ
     var modal = document.getElementById("myModal");
 
