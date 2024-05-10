@@ -8,9 +8,9 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-public class SupplierPageServlet extends HttpServlet {
+public class SupplierServlet extends HttpServlet {
 
-    public SupplierPageServlet() {
+    public SupplierServlet() {
         super();
     }
 
