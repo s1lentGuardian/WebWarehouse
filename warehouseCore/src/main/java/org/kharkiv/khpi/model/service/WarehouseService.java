@@ -11,6 +11,7 @@ import org.kharkiv.khpi.model.repository.SupplierDAO;
 import org.kharkiv.khpi.model.repository.WarehouseDAO;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Stateless
 public class WarehouseService {
@@ -20,9 +21,6 @@ public class WarehouseService {
 
     @Inject
     private WarehouseDAO warehouseDAO;
-
-    @Inject
-    private SupplierDAO supplierDAO;
 
     @Transactional
     public Warehouse createWarehouse() {
@@ -47,5 +45,32 @@ public class WarehouseService {
 //        warehouse.addGoods(goods);
 
         return warehouseDAO.save(warehouse);
+    }
+
+    public List<Warehouse> findAllWarehouses() {
+        return warehouseDAO.findAllWarehouses();
+    }
+
+    public Warehouse save(String name, Long numberPlace, String country, String city, String addressLocation, Long goodsId) {
+        Goods goods = goodsDAO.findById(goodsId);
+        Warehouse warehouse = createWarehouse(name, numberPlace, country, city, addressLocation, goods);
+
+        return warehouseDAO.save(warehouse);
+    }
+
+    private static Warehouse createWarehouse(String name, Long numberPlace, String country, String city, String addressLocation, Goods goods) {
+        Warehouse warehouse = new Warehouse();
+        warehouse.setName(name);
+        warehouse.setNumberPlaces(numberPlace);
+        warehouse.setCountry(country);
+        warehouse.setCity(city);
+        warehouse.setAddressLocation(addressLocation);
+        warehouse.addGoods(goods);
+
+        return warehouse;
+    }
+
+    public void delete(Long id) {
+        warehouseDAO.delete(id);
     }
 }
