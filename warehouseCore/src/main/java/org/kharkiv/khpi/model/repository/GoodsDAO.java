@@ -4,9 +4,11 @@ import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.TypedQuery;
 import org.kharkiv.khpi.model.Goods;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,6 +21,15 @@ public class GoodsDAO {
 
     @PersistenceContext
     private EntityManager entityManager;
+
+    public List<Goods> findAllGoods() {
+        try {
+            TypedQuery<Goods> query = entityManager.createQuery("SELECT g FROM Goods g", Goods.class);
+            return query.getResultList();
+        } catch (NoResultException e) {
+            return new ArrayList<>();
+        }
+    }
 
     /**
      * Пошук сутності за первинним ключем
@@ -60,7 +71,11 @@ public class GoodsDAO {
     @ return створена або збережена сутність
      */
     public Goods save(Goods goods) {
-        entityManager.persist(goods);
+        if (goods.getGoodsId() == null)
+            entityManager.persist(goods);
+        else
+            entityManager.merge(goods);
+
         return goods;
     }
 
