@@ -1,14 +1,30 @@
 package org.kharkiv.khpi.servlet;
 
+import jakarta.inject.Inject;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Validator;
+import org.kharkiv.khpi.model.Goods;
+import org.kharkiv.khpi.model.Supplier;
+import org.kharkiv.khpi.model.exception.WarehouseNumberFormatException;
+import org.kharkiv.khpi.model.service.SupplierService;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.Set;
 
 public class SupplierServlet extends HttpServlet {
+
+    @Inject
+    private SupplierService supplierService;
+
+    @Inject
+    private Validator validator;
 
     public SupplierServlet() {
         super();
@@ -16,28 +32,57 @@ public class SupplierServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        response.setContentType("text/html; charset=UTF-8");
-
-        String html = getHtml();
-
-        PrintWriter pw = response.getWriter();
-        pw.write(html);
-        pw.close();
+        List<Supplier> suppliers = supplierService.findAllSuppliers();
+        request.setAttribute("suppliers", suppliers);
+        request.getRequestDispatcher("supplier.jsp").forward(request, response);
     }
 
-    private String getHtml() {
-        return """
-                <!DOCTYPE html>
-                <html lang="en">
-                <head>
-                    <meta charset="UTF-8">
-                    <title>Supplier Page</title>
-                </head>
-                <body>
-                <a href="homePage.html">Home</a>
-                <h1>Welcome to Supplier Page!</h1>
-                </body>
-                </html>
-                """;
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String action = req.getParameter("ACTION");
+
+        if ("REMOVE".equals(action)) {
+            String[] suppliersIds = req.getParameterValues("supplierIds");
+            if (suppliersIds != null) {
+                for (String supplierId : suppliersIds) {
+                    String[] individualSupplierIds = supplierId.split(";");
+                    for (String individualSupplierId : individualSupplierIds) {
+                        supplierService.delete(Long.parseLong(individualSupplierId));
+                    }
+                }
+            }
+        } else if ("UPDATE".equals(action)) {
+            String supplierId = req.getParameter("supplierIds");
+            String country = req.getParameter("country");
+            String city = req.getParameter("city");
+            String phoneNumber = req.getParameter("phoneNumber");
+
+            Supplier supplier = new Supplier(country, city, phoneNumber);
+
+            Set<ConstraintViolation<Supplier>> violations = validator.validate(supplier);
+
+            if (!violations.isEmpty()) {
+                req.setAttribute("violations", violations);
+                req.getRequestDispatcher("notValid.jsp").forward(req, resp);
+            } else {
+                supplierService.update(Long.parseLong(supplierId), country, city, phoneNumber);
+            }
+        } else {
+            String country = req.getParameter("country");
+            String city = req.getParameter("city");
+            String phoneNumber = req.getParameter("phoneNumber");
+
+            Supplier supplier = new Supplier(country, city, phoneNumber);
+
+            Set<ConstraintViolation<Supplier>> violations = validator.validate(supplier);
+
+            if (!violations.isEmpty()) {
+                req.setAttribute("violations", violations);
+                req.getRequestDispatcher("notValid.jsp").forward(req, resp);
+            } else {
+                supplierService.save(supplier);
+            }
+        }
+        resp.sendRedirect(req.getContextPath() + "/suppliers");
     }
 }
