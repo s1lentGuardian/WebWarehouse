@@ -1,6 +1,7 @@
 package org.kharkiv.khpi.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotEmpty;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -25,21 +26,32 @@ public class Goods {
     @Column(name = "type_of_goods")
     private String typeOfGoods;
 
+    @NotEmpty(message = "Name cannot be empty")
     @Column(name = "name")
     private String name;
 
+    @NotEmpty(message = "Price cannot be empty")
     @Column(name = "price")
     private BigDecimal price;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne()
     @JoinColumn(name = "supplier_id")
     private Supplier supplier;
 
-    @ManyToMany(mappedBy = "goods", cascade = CascadeType.ALL)
+    @ManyToMany(mappedBy = "goods")
     private Set<Warehouse> warehouses = new HashSet<>();
 
-    @ManyToMany(mappedBy = "goods", cascade = CascadeType.ALL)
+    @ManyToMany(mappedBy = "goods")
     private Set<Transportation> transportations = new HashSet<>();
+
+    public Goods() {
+    }
+
+    public Goods(String typeOfGoods, String name, BigDecimal price) {
+        this.typeOfGoods = typeOfGoods;
+        this.name = name;
+        this.price = price;
+    }
 
     public Long getGoodsId() {
         return goodsId;
