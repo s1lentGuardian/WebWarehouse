@@ -5,14 +5,17 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Validator;
 import org.kharkiv.khpi.model.Goods;
 import org.kharkiv.khpi.model.Warehouse;
+import org.kharkiv.khpi.model.exception.WarehouseNumberFormatException;
 import org.kharkiv.khpi.model.service.GoodsService;
 import org.kharkiv.khpi.model.service.WarehouseService;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.List;
+import java.util.Set;
 
 public class WarehouseServlet extends HttpServlet {
 
@@ -21,6 +24,9 @@ public class WarehouseServlet extends HttpServlet {
 
     @Inject
     private GoodsService goodsService;
+
+    @Inject
+    private Validator validator;
 
     public WarehouseServlet() {
         super();
@@ -49,21 +55,58 @@ public class WarehouseServlet extends HttpServlet {
                     }
                 }
             }
+        } else if ("UPDATE".equals(action)) {
+            try {
+                String warehouseIdStr = req.getParameter("warehouseId");
+                String name = req.getParameter("warName");
+
+                String id = req.getParameter("goodsId");
+                Long goodsId = Long.parseLong(id);
+
+                String numberOfPlacesStr = req.getParameter("numberOfPlaces");
+                Long numberOfPlaces = Long.parseLong(numberOfPlacesStr);
+
+                String country = req.getParameter("country");
+                String city = req.getParameter("city");
+                String address = req.getParameter("address");
+
+                Warehouse warehouse = new Warehouse(name, numberOfPlaces, country, city, address);
+                Set<ConstraintViolation<Warehouse>> violations = validator.validate(warehouse);
+
+                if (!violations.isEmpty()) {
+                    req.setAttribute("violations", violations);
+                    req.getRequestDispatcher("notValid.jsp").forward(req, resp);
+                } else {
+                    warehouseService.update(Long.parseLong(warehouseIdStr), name, numberOfPlaces, country, city, address, goodsId);
+                }
+            } catch (RuntimeException e) {
+                throw new WarehouseNumberFormatException(e.getMessage());
+            }
         } else {
 
-            String name = req.getParameter("warName");
+            try {
+                String name = req.getParameter("warName");
+                String[] goodsIds = req.getParameterValues("goodsId");
 
-            String id = req.getParameter("goodsId");
-            Long goodsId = Long.parseLong(id);
+                String numberOfPlacesStr = req.getParameter("numberOfPlaces");
+                Long numberOfPlaces = Long.parseLong(numberOfPlacesStr);
 
-            String numberOfPlacesStr = req.getParameter("numberOfPlaces");
-            Long numberOfPlaces = Long.parseLong(numberOfPlacesStr);
+                String country = req.getParameter("country");
+                String city = req.getParameter("city");
+                String address = req.getParameter("address");
 
-            String country = req.getParameter("country");
-            String city = req.getParameter("city");
-            String address = req.getParameter("address");
+                Warehouse warehouse = new Warehouse(name, numberOfPlaces, country, city, address);
+                Set<ConstraintViolation<Warehouse>> violations = validator.validate(warehouse);
 
-            warehouseService.save(name, numberOfPlaces, country, city, address, goodsId);
+                if (!violations.isEmpty()) {
+                    req.setAttribute("violations", violations);
+                    req.getRequestDispatcher("notValid.jsp").forward(req, resp);
+                } else {
+                    warehouseService.save(warehouse, goodsIds);
+                }
+            } catch (RuntimeException e) {
+                throw new WarehouseNumberFormatException(e.getMessage());
+            }
         }
         resp.sendRedirect(req.getContextPath() + "/warehouses");
     }
