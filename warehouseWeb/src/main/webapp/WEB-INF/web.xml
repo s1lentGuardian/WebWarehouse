@@ -71,8 +71,12 @@
         <location>/warehouseNumberFormatException.html</location>
     </error-page>
     <error-page>
-        <exception-type>jakarta.validation.ConstraintViolationException</exception-type>
+        <exception-type>org.kharkiv.khpi.model.exception.WarehouseConstraintViolationException</exception-type>
         <location>/notValid.jsp</location>
+    </error-page>
+    <error-page>
+        <exception-type>java.lang.Exception</exception-type>
+        <location>/errorPage.html</location>
     </error-page>
 
 
