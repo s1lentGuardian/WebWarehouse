@@ -56,15 +56,11 @@ public class TransportationServlet extends HttpServlet {
         String action = req.getParameter("ACTION");
 
         if ("REMOVE".equals(action)) {
-            String[] transportationIds = req.getParameterValues("transportationIds");
-            if (transportationIds != null) {
-                for (String transportationId : transportationIds) {
-                    String[] individualTransportationIds = transportationId.split(";");
-                    for (String individualTransportationId : individualTransportationIds) {
-                        transportationService.delete(Long.parseLong(individualTransportationId));
-                    }
-                }
+            String[] transportationIds = req.getParameter("transportationIds").split(";");
+            for (String transportationId : transportationIds) {
+                transportationService.delete(Long.parseLong(transportationId));
             }
+
         } else if ("UPDATE".equals(action)) {
             try {
                 String transportationIdStr = req.getParameter("transportationId");
