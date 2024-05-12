@@ -4,6 +4,16 @@
 <%@ page import="jakarta.validation.ConstraintViolation" %>
 <%@ page import="org.kharkiv.khpi.model.Car" %>
 
+<html>
+<head>
+    <title>Not Valid</title>
+</head>
+<body>
+<a href="homePage.html">Home</a>
+<br>
+<br>
+<p1>Validation Errors:</p1>
+<br>
 <%--відображення помилок у вигляді списка--%>
 <%
     Set<ConstraintViolation<Car>> violations = (Set<ConstraintViolation<Car>>) request.getAttribute("violations");
@@ -15,11 +25,5 @@
         out.println("</ul>");
     }
 %>
-<html>
-<head>
-    <title>Not Valid</title>
-</head>
-<body>
-
 </body>
 </html>
