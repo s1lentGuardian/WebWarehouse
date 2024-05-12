@@ -53,7 +53,16 @@ public class CarServlet extends HttpServlet {
             String type = req.getParameter("type");
             String plate = req.getParameter("plate");
 
-            carService.update(Long.parseLong(carIdsStr), make, type, plate);
+            Car car = new Car(make, type, plate);
+
+            Set<ConstraintViolation<Car>> violations = validator.validate(car);
+
+            if(!violations.isEmpty()) {
+                req.setAttribute("violations", violations);
+                req.getRequestDispatcher("notValid.jsp").forward(req, resp);
+            } else {
+                carService.update(Long.parseLong(carIdsStr), make, type, plate);
+            }
         } else {
             String make = req.getParameter("make");
             String type = req.getParameter("type");
