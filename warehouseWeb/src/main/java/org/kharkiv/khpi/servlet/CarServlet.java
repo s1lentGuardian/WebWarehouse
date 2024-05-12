@@ -6,8 +6,11 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Validator;
 import org.kharkiv.khpi.model.Car;
+import org.kharkiv.khpi.model.exception.WarehouseConstraintViolationException;
+import org.kharkiv.khpi.model.exception.WarehouseNumberFormatException;
 import org.kharkiv.khpi.model.service.CarService;
 
 import java.io.IOException;
@@ -55,7 +58,7 @@ public class CarServlet extends HttpServlet {
 
             if (!violations.isEmpty()) {
                 req.setAttribute("violations", violations);
-                req.getRequestDispatcher("notValid.jsp").forward(req, resp);
+                throw new WarehouseConstraintViolationException(violations);
             } else {
                 carService.update(Long.parseLong(carIdsStr), make, type, plate);
             }
@@ -70,7 +73,7 @@ public class CarServlet extends HttpServlet {
 
             if (!violations.isEmpty()) {
                 req.setAttribute("violations", violations);
-                req.getRequestDispatcher("notValid.jsp").forward(req, resp);
+                throw new WarehouseConstraintViolationException(violations);
             } else {
                 carService.save(car);
             }
