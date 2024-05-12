@@ -63,6 +63,17 @@
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>SupplierServlet</servlet-name>
-        <url-pattern>/supplier</url-pattern>
+        <url-pattern>/suppliers</url-pattern>
     </servlet-mapping>
+
+    <error-page>
+        <exception-type>org.kharkiv.khpi.model.exception.WarehouseNumberFormatException</exception-type>
+        <location>/warehouseNumberFormatException.html</location>
+    </error-page>
+    <error-page>
+        <exception-type>jakarta.validation.ConstraintViolationException</exception-type>
+        <location>/notValid.jsp</location>
+    </error-page>
+
+
 </web-app>
