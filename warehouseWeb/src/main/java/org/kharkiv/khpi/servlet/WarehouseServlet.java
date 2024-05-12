@@ -9,6 +9,7 @@ import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
 import org.kharkiv.khpi.model.Goods;
 import org.kharkiv.khpi.model.Warehouse;
+import org.kharkiv.khpi.model.exception.WarehouseConstraintViolationException;
 import org.kharkiv.khpi.model.exception.WarehouseNumberFormatException;
 import org.kharkiv.khpi.model.service.GoodsService;
 import org.kharkiv.khpi.model.service.WarehouseService;
@@ -71,7 +72,7 @@ public class WarehouseServlet extends HttpServlet {
 
                 if (!violations.isEmpty()) {
                     req.setAttribute("violations", violations);
-                    req.getRequestDispatcher("notValid.jsp").forward(req, resp);
+                    throw new WarehouseConstraintViolationException(violations);
                 } else {
                     warehouseService.update(Long.parseLong(warehouseIdStr), name, numberOfPlaces, country, city, address, goodsId);
                 }
@@ -96,7 +97,7 @@ public class WarehouseServlet extends HttpServlet {
 
                 if (!violations.isEmpty()) {
                     req.setAttribute("violations", violations);
-                    req.getRequestDispatcher("notValid.jsp").forward(req, resp);
+                    throw new WarehouseConstraintViolationException(violations);
                 } else {
                     warehouseService.save(warehouse, goodsIds);
                 }

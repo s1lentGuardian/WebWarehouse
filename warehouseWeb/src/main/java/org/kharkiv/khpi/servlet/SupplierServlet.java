@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
 import org.kharkiv.khpi.model.Supplier;
+import org.kharkiv.khpi.model.exception.WarehouseConstraintViolationException;
 import org.kharkiv.khpi.model.service.SupplierService;
 
 import java.io.IOException;
@@ -55,7 +56,7 @@ public class SupplierServlet extends HttpServlet {
 
             if (!violations.isEmpty()) {
                 req.setAttribute("violations", violations);
-                req.getRequestDispatcher("notValid.jsp").forward(req, resp);
+                throw new WarehouseConstraintViolationException(violations);
             } else {
                 supplierService.update(Long.parseLong(supplierId), country, city, phoneNumber);
             }
@@ -70,7 +71,7 @@ public class SupplierServlet extends HttpServlet {
 
             if (!violations.isEmpty()) {
                 req.setAttribute("violations", violations);
-                req.getRequestDispatcher("notValid.jsp").forward(req, resp);
+                throw new WarehouseConstraintViolationException(violations);
             } else {
                 supplierService.save(supplier);
             }
