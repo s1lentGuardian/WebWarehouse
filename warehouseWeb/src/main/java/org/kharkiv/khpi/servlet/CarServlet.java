@@ -5,16 +5,22 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Validator;
 import org.kharkiv.khpi.model.Car;
 import org.kharkiv.khpi.model.service.CarService;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Set;
 
 public class CarServlet extends HttpServlet {
 
     @Inject
     private CarService carService;
+
+    @Inject
+    private Validator validator;
 
     public CarServlet() {
         super();
@@ -53,7 +59,16 @@ public class CarServlet extends HttpServlet {
             String type = req.getParameter("type");
             String plate = req.getParameter("plate");
 
-            carService.save(make, type, plate);
+            Car car = new Car(make, type, plate);
+
+            Set<ConstraintViolation<Car>> violations = validator.validate(car);
+
+            if(!violations.isEmpty()) {
+                req.setAttribute("violations", violations);
+                req.getRequestDispatcher("notValid.jsp").forward(req, resp);
+            } else {
+                carService.save(car);
+            }
         }
         resp.sendRedirect(req.getContextPath() + "/cars");
     }
