@@ -7,14 +7,10 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
-import org.kharkiv.khpi.model.Goods;
 import org.kharkiv.khpi.model.Supplier;
-import org.kharkiv.khpi.model.exception.WarehouseNumberFormatException;
 import org.kharkiv.khpi.model.service.SupplierService;
 
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Set;
 
@@ -42,15 +38,11 @@ public class SupplierServlet extends HttpServlet {
         String action = req.getParameter("ACTION");
 
         if ("REMOVE".equals(action)) {
-            String[] suppliersIds = req.getParameterValues("supplierIds");
-            if (suppliersIds != null) {
-                for (String supplierId : suppliersIds) {
-                    String[] individualSupplierIds = supplierId.split(";");
-                    for (String individualSupplierId : individualSupplierIds) {
-                        supplierService.delete(Long.parseLong(individualSupplierId));
-                    }
-                }
+            String[] suppliersIds = req.getParameter("supplierIds").split(";");
+            for (String supplierId : suppliersIds) {
+                supplierService.delete(Long.parseLong(supplierId));
             }
+
         } else if ("UPDATE".equals(action)) {
             String supplierId = req.getParameter("supplierIds");
             String country = req.getParameter("country");
