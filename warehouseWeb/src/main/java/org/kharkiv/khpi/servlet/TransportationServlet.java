@@ -9,14 +9,13 @@ import org.kharkiv.khpi.model.Car;
 import org.kharkiv.khpi.model.Goods;
 import org.kharkiv.khpi.model.Transportation;
 import org.kharkiv.khpi.model.Warehouse;
+import org.kharkiv.khpi.model.exception.WarehouseNumberFormatException;
 import org.kharkiv.khpi.model.service.CarService;
 import org.kharkiv.khpi.model.service.GoodsService;
 import org.kharkiv.khpi.model.service.TransportationService;
 import org.kharkiv.khpi.model.service.WarehouseService;
 
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.time.LocalDate;
 import java.util.List;
 
 public class TransportationServlet extends HttpServlet {
@@ -66,25 +65,55 @@ public class TransportationServlet extends HttpServlet {
                     }
                 }
             }
+        } else if ("UPDATE".equals(action)) {
+            try {
+                String transportationIdStr = req.getParameter("transportationId");
+                Long transportationId = Long.parseLong(transportationIdStr);
+
+                String carIdStr = req.getParameter("carId");
+                Long carId = Long.parseLong(carIdStr);
+
+                String goodsIdStr = req.getParameter("goodsId");
+                Long goodsId = Long.parseLong(goodsIdStr);
+
+                String countStr = req.getParameter("count");
+                Integer count = Integer.parseInt(countStr);
+
+                String pickFromWarIdStr = req.getParameter("pickFromWar");
+                Long pickFromWarId = Long.parseLong(pickFromWarIdStr);
+
+                String bringToWarIdStr = req.getParameter("bringToWar");
+                Long bringToWarId = Long.parseLong(bringToWarIdStr);
+
+                String dateStr = req.getParameter("date");
+
+                transportationService.update(transportationId, carId, goodsId, count, pickFromWarId, bringToWarId, dateStr);
+            } catch (RuntimeException e) {
+                throw new WarehouseNumberFormatException(e.getMessage());
+            }
         } else {
-            String carIdStr = req.getParameter("carId");
-            Long carId = Long.parseLong(carIdStr);
+            try {
+                String carIdStr = req.getParameter("carId");
+                Long carId = Long.parseLong(carIdStr);
 
-            String goodsIdStr = req.getParameter("goodsId");
-            Long goodsId = Long.parseLong(goodsIdStr);
+                String goodsIdStr = req.getParameter("goodsId");
+                Long goodsId = Long.parseLong(goodsIdStr);
 
-            String countStr = req.getParameter("count");
-            Integer count = Integer.parseInt(countStr);
+                String countStr = req.getParameter("count");
+                Integer count = Integer.parseInt(countStr);
 
-            String pickFromWarIdStr = req.getParameter("pickFromWar");
-            Long pickFromWarId = Long.parseLong(pickFromWarIdStr);
+                String pickFromWarIdStr = req.getParameter("pickFromWar");
+                Long pickFromWarId = Long.parseLong(pickFromWarIdStr);
 
-            String bringToWarIdStr = req.getParameter("bringToWar");
-            Long bringToWarId = Long.parseLong(bringToWarIdStr);
+                String bringToWarIdStr = req.getParameter("bringToWar");
+                Long bringToWarId = Long.parseLong(bringToWarIdStr);
 
-            String dateStr = req.getParameter("date");
+                String dateStr = req.getParameter("date");
 
-            transportationService.createTransportation(carId, goodsId, count, pickFromWarId, bringToWarId, dateStr);
+                transportationService.save(carId, goodsId, count, pickFromWarId, bringToWarId, dateStr);
+            } catch (RuntimeException e) {
+                throw new WarehouseNumberFormatException(e.getMessage());
+            }
         }
         resp.sendRedirect(req.getContextPath() + "/transportations");
     }
