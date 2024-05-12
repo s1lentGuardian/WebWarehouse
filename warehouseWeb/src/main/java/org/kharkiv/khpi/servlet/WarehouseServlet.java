@@ -46,14 +46,10 @@ public class WarehouseServlet extends HttpServlet {
         String action = req.getParameter("ACTION");
 
         if ("REMOVE".equals(action)) {
-            String[] warehouseIds = req.getParameterValues("warehouseIds");
-            if (warehouseIds != null) {
-                for (String warehouseId : warehouseIds) {
-                    String[] individualWarehouseIds = warehouseId.split(";");
-                    for (String individualWarehouseId : individualWarehouseIds) {
-                        warehouseService.delete(Long.parseLong(individualWarehouseId));
-                    }
-                }
+            String[] warehouseIds = req.getParameter("warehouseIds").split(";");
+            for (String warehouseId : warehouseIds) {
+                warehouseService.delete(Long.parseLong(warehouseId));
+
             }
         } else if ("UPDATE".equals(action)) {
             try {
