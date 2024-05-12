@@ -22,38 +22,15 @@ public class WarehouseService {
     @Inject
     private WarehouseDAO warehouseDAO;
 
-    @Transactional
-    public Warehouse createWarehouse() {
-        Faker faker = new Faker();
-
-        Goods goods = goodsDAO.findById(2L);
-
-        Warehouse warehouse = new Warehouse();
-//        Warehouse warehouse = warehouseDAO.findById(1);
-        warehouse.setName(faker.name().name());
-        warehouse.setNumberPlaces(faker.number().randomNumber());
-        warehouse.setCountry(faker.country().name());
-        warehouse.setCity(faker.address().city());
-        warehouse.setAddressLocation(faker.address().fullAddress());
-        warehouse.addGoods(goods);
-
-//        goods = new Goods();
-//        goods.setSupplier(supplierDAO.findById(2));
-//        goods.setName(faker.name().name());
-//        goods.setTypeOfGoods(faker.name().name());
-//        goods.setPrice(BigDecimal.valueOf(faker.number().positive()));
-//        warehouse.addGoods(goods);
-
-        return warehouseDAO.save(warehouse);
-    }
-
     public List<Warehouse> findAllWarehouses() {
         return warehouseDAO.findAllWarehouses();
     }
 
-    public Warehouse save(String name, Long numberPlace, String country, String city, String addressLocation, Long goodsId) {
-        Goods goods = goodsDAO.findById(goodsId);
-        Warehouse warehouse = createWarehouse(name, numberPlace, country, city, addressLocation, goods);
+    public Warehouse save(Warehouse warehouse, String[] goodsIds) {
+        for (String goodsId : goodsIds) {
+            Goods goods = goodsDAO.findById(Long.parseLong(goodsId));
+            warehouse.addGoods(goods);
+        }
 
         return warehouseDAO.save(warehouse);
     }
@@ -72,5 +49,19 @@ public class WarehouseService {
 
     public void delete(Long id) {
         warehouseDAO.delete(id);
+    }
+
+    public void update(Long id, String name, Long numberPlace, String country, String city, String addressLocation, Long goodId) {
+        Warehouse warehouse = warehouseDAO.findById(id);
+
+        Goods goods = goodsDAO.findById(goodId);
+        warehouse.setName(name);
+        warehouse.setNumberPlaces(numberPlace);
+        warehouse.setCountry(country);
+        warehouse.setCity(city);
+        warehouse.setAddressLocation(addressLocation);
+        warehouse.addGoods(goods);
+
+        warehouseDAO.save(warehouse);
     }
 }
