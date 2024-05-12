@@ -313,16 +313,6 @@
             modal.style.display = "none";
         }
     };
-
-    // Логіка видалення рядків аналогічна як раніше
-    document.querySelector('.btn-danger').addEventListener('click', function () {
-        var checkboxes = document.querySelectorAll('input[type="checkbox"]');
-        checkboxes.forEach(function (checkbox) {
-            if (checkbox.checked) {
-                checkbox.parentElement.parentElement.remove();
-            }
-        });
-    });
 </script>
 </body>
 </html>
