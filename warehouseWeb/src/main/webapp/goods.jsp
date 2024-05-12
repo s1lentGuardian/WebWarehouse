@@ -1,10 +1,12 @@
 <%@ page import="java.util.List" %>
 <%@ page import="org.kharkiv.khpi.model.Goods" %>
+<%@ page import="org.kharkiv.khpi.model.Supplier" %>
 
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
 <%
     List<Goods> goods = (List<Goods>) request.getAttribute("goods");
+    List<Supplier> suppliers = (List<Supplier>) request.getAttribute("suppliers");
 %>
 <html lang="en">
 <head>
@@ -108,6 +110,7 @@
             <th>Тип товару</th>
             <th>Назва</th>
             <th>Ціна</th>
+            <th>Постачальник</th>
         </tr>
         </thead>
         <tbody>
@@ -116,11 +119,12 @@
             {
         %>
         <tr>
-            <td><input type="checkbox" value="<%= goodsItem.getGoodsId()%>"></td>
+            <td><input type="checkbox" value="<%= goodsItem.getGoodsId()%>" data-supplier-id="<%= goodsItem.getSupplier().getSupplierId() %>"></td>
             <td><%= goodsItem.getGoodsId()%></td>
             <td><%= goodsItem.getTypeOfGoods()%></td>
             <td><%= goodsItem.getName()%></td>
             <td><%= goodsItem.getPrice()%></td>
+            <td><%= goodsItem.getSupplier().getPhoneNumber()%></td>
         </tr>
         <%
             }
@@ -137,22 +141,19 @@
             <button type="submit" class="btn btn-danger" id="deleteBtn">Видалити</button>
         </form>
 
-        <button type="button" class="btn btn-primary">Оновити</button>
-        <button type="button" class="btn btn-info">Додаткова Інформація</button>
+        <button id="updateBtn" type="button" class="btn btn-primary">Оновити</button>
     </div>
 
     <div id="myModal" class="modal">
         <div class="modal-content">
-            <form id="goodsForm" method="post" action="goods">
+            <form id="createUpdateForm" method="post" action="goods">
 
-                <label for="supplierCountry">Країна постачальника</label>
-                <input id="supplierCountry" name="supplierCountry"><br>
-
-                <label for="supplierCity">Місто постачальника</label>
-                <input id="supplierCity" name="supplierCity"><br>
-
-                <label for="supplierPhoneNumber">Номер телефону постачальника</label>
-                <input id="supplierPhoneNumber" name="supplierPhoneNumber"><br>
+                <label for="supplierId">Постачальник</label>
+                <select id="supplierId" name="supplierId">
+                    <% for(Supplier supplier : suppliers) { %>
+                    <option value="<%= supplier.getSupplierId() %>"><%= supplier.getPhoneNumber()%></option>
+                    <% } %>
+                </select><br>
 
                 <label for="typeOfGoods">Тип товару</label>
                 <input id="typeOfGoods" name="typeOfGoods"><br>
@@ -165,34 +166,6 @@
 
                 <button type="submit" class="btn btn-primary d-inline-block">Створити</button>
             </form>
-        </div>
-    </div>
-    <div id="additionalInfoModal" class="modal">
-        <div class="modal-content">
-            <h2 style="text-align: center;">Постачальник</h2>
-            <table width="100%" style="margin: 0 auto;">
-                <tbody>
-                <tr>
-                    <td>Айді</td>
-                    <td>Країна</td>
-                    <td>Компанія</td>
-                    <td>Телефон</td>
-                </tr>
-                <%
-                    for (Goods goodsItem : goods)
-                    {
-                %>
-                <tr>
-                    <td><%= goodsItem.getSupplier().getSupplierId()%></td>
-                    <td><%= goodsItem.getSupplier().getCountry() %></td>
-                    <td><%= goodsItem.getSupplier().getCity() %></td>
-                    <td><%= goodsItem.getSupplier().getPhoneNumber()%></td>
-                </tr>
-                <%
-                    }
-                %>
-                </tbody>
-            </table>
         </div>
     </div>
 </div>
@@ -214,6 +187,51 @@
         document.querySelector('form').submit();
     });
 
+    //UPDATE
+    document.getElementById("updateBtn").addEventListener('click', function () {
+        var checkboxes = document.querySelectorAll('input[type="checkbox"]');
+        var selectedCheckbox;
+        checkboxes.forEach(function (checkbox) {
+            if (checkbox.checked) {
+                selectedCheckbox = checkbox;
+            }
+        });
+        if (selectedCheckbox) {
+            var goodsId = selectedCheckbox.value;
+            var supplierId = selectedCheckbox.dataset.supplierId; // Получить ID поставщика из атрибута data-supplier-id
+
+            var goodsRow = document.querySelector('input[value="' + goodsId + '"]').parentNode.parentNode;
+            var carData = {
+                id: goodsRow.querySelector('td:nth-child(2)').innerText,
+                typeOfGoods: goodsRow.querySelector('td:nth-child(3)').innerText,
+                name: goodsRow.querySelector('td:nth-child(4)').innerText,
+                price: goodsRow.querySelector('td:nth-child(5)').innerText,
+                supplierId: goodsRow.querySelector('td:nth-child(6)').innerText
+            };
+            document.getElementById('typeOfGoods').value = carData.typeOfGoods;
+            document.getElementById('name').value = carData.name;
+            document.getElementById('price').value = carData.price;
+            document.getElementById('supplierId').value = supplierId;
+
+
+
+            var form = document.getElementById('createUpdateForm');
+            var actionInput = document.createElement('input');
+            actionInput.type = 'hidden';
+            actionInput.name = 'ACTION';
+            actionInput.value = 'UPDATE';
+            form.appendChild(actionInput);
+
+            var goodsIdsInput = document.createElement('input');
+            goodsIdsInput.type = 'hidden';
+            goodsIdsInput.name = 'goodsId';
+            goodsIdsInput.value = goodsId;
+            form.appendChild(goodsIdsInput);
+        } else {
+            alert("Виберіть товар для оновлення.");
+        }
+    });
+
 
 
 
@@ -229,7 +247,7 @@
     document.getElementById("showFormBtn").addEventListener("click", openModal);
 
     // При кліку на кнопку "Оновити"
-    document.querySelector('.btn-primary').addEventListener('click', function() {
+    document.getElementById("updateBtn").addEventListener('click', function () {
         // Отримати всі чекбокси
         var checkboxes = document.querySelectorAll('input[type="checkbox"]');
         // Перевірити, чи хоча б один чекбокс вибраний
@@ -252,43 +270,7 @@
         }
     };
 
-    // Логіка видалення рядків аналогічна як раніше
-    document.querySelector('.btn-danger').addEventListener('click', function() {
-        var checkboxes = document.querySelectorAll('input[type="checkbox"]');
-        checkboxes.forEach(function(checkbox) {
-            if (checkbox.checked) {
-                checkbox.parentElement.parentElement.remove();
-            }
-        });
-    });
 
-    var additionalInfoModal = document.getElementById("additionalInfoModal");
-
-    // Функція, що відкриває модальне вікно з додатковою інформацією
-    function openAdditionalInfoModal() {
-        // Отримати всі чекбокси
-        var checkboxes = document.querySelectorAll('input[type="checkbox"]');
-        // Перевірити, чи хоча б один чекбокс вибраний
-        var atLeastOneChecked = false;
-        checkboxes.forEach(function(checkbox) {
-            if (checkbox.checked) {
-                atLeastOneChecked = true;
-            }
-        });
-        // Якщо хоча б один чекбокс вибраний, відкрити модальне вікно з додатковою інформацією
-        if (atLeastOneChecked) {
-            additionalInfoModal.style.display = "block";
-        }
-    }
-    // При кліку на кнопку "Додаткова Інформація"
-    document.querySelector('.btn-info').addEventListener('click', openAdditionalInfoModal);
-
-    // Закриття модального вікна з додатковою інформацією при кліку поза ним
-    window.onclick = function(event) {
-        if (event.target === additionalInfoModal) {
-            additionalInfoModal.style.display = "none";
-        }
-    };
 </script>
 </body>
 </html>
