@@ -16,6 +16,9 @@
 <head>
     <title>Goods Page</title>
     <style>
+        .error-text {
+            color: red;
+        }
         body, html {
             height: 100%;
             margin: 0;
@@ -126,16 +129,19 @@
             {
         %>
         <tr>
-            <td><input type="checkbox" value="<%= transportation.getTransportationId()%>"></td>
+            <td><input type="checkbox" value="<%= transportation.getTransportationId()%>"
+                       data-car-id="<%= transportation.getCar().getId() %>"
+                       data-pickFromWar-id="<%= transportation.getPickUpFromWarehouse().getWarehouseId() %>"
+                       data-bringToWar-id="<%= transportation.getBringToWarehouse().getWarehouseId() %>"></td>
             <td><%= transportation.getTransportationId()%></td>
             <td><%= transportation.getCar().getLicensePlateNumber()%></td>
-            <%
-                for (Goods warehouseGoods : transportation.getGoods())
-                {
+
+            <% for (Goods warehouseGoods : transportation.getGoods())
+            {
             %>
             <td><%= warehouseGoods.getName()%></td>
             <%
-                }
+            }
             %>
             <td><%= transportation.getPickUpFromWarehouse().getName()%></td>
             <td><%= transportation.getBringToWarehouse().getName()%></td>
@@ -156,14 +162,12 @@
             <button type="button" class="btn btn-danger" id="deleteBtn">Видалити</button>
         </form>
 
-        <button type="button" class="btn btn-primary">Оновити</button>
-        <button type="button" class="btn btn-info">Додаткова Інформація</button>
-
+        <button id="updateBtn" type="button" class="btn btn-primary">Оновити</button>
     </div>
 
     <div id="myModal" class="modal">
         <div class="modal-content">
-            <form method="post" action="transportations">
+            <form id="createUpdateForm" method="post" action="transportations">
                 <label for="carId">Айді машини</label>
                 <select id="carId" name="carId">
                     <% for(Car car : cars) { %>
@@ -194,30 +198,13 @@
                     <% } %>
                 </select><br>
 
-                <label for="date">Дата (у форматі рік-місяць-день)</label>
-                <input id="date" name="date"><br>
+                <label for="date">Дата</label>
+                <input id="date" name="date" aria-describedby="dateDescribedby">
+                <div id="dateDescribedby" class="form-text error-text">* Введіть у форматі рік-місяць-день (yyyy-MM-dd)</div><br>
+
 
                 <button type="submit" class="btn btn-primary d-inline-block">Створити</button>
             </form>
-        </div>
-    </div>
-    <div id="additionalInfoModal" class="modal">
-        <div class="modal-content">
-            <table width="100%" style="margin: 0 auto;">
-                <tbody>
-                <tr>
-                    <th colspan="2">Товар</th>
-                </tr>
-                <tr>
-                    <td>Тип товару</td>
-                    <td>Пральна машинка</td>
-                </tr>
-                <tr>
-                    <td>Назва</td>
-                    <td>Bosh</td>
-                </tr>
-                </tbody>
-            </table>
         </div>
     </div>
 </div>
@@ -242,6 +229,61 @@
         document.querySelector('form').submit();
     });
 
+    //UPDATE
+    document.getElementById("updateBtn").addEventListener('click', function () {
+        var checkboxes = document.querySelectorAll('input[type="checkbox"]');
+        var selectedCheckbox;
+        checkboxes.forEach(function (checkbox) {
+            if (checkbox.checked) {
+                selectedCheckbox = checkbox;
+            }
+        });
+        if (selectedCheckbox) {
+            var transportationId = selectedCheckbox.value;
+            var carId = selectedCheckbox.dataset.carId;
+            var pickFromWarId = selectedCheckbox.dataset.pickFromWarId;
+            var bringToWarId = selectedCheckbox.dataset.bringToWarId;
+
+
+            var transportationRow = document.querySelector('input[value="' + transportationId + '"]').parentNode.parentNode;
+            var transportationData = {
+                id: transportationRow.querySelector('td:nth-child(2)').innerText,
+                carId: transportationRow.querySelector('td:nth-child(3)').innerText,
+                goodsId: transportationRow.querySelector('td:nth-child(4)').innerText,
+                pickFromWar: transportationRow.querySelector('td:nth-child(5)').innerText,
+                bringToWar: transportationRow.querySelector('td:nth-child(6)').innerText,
+                count: transportationRow.querySelector('td:nth-child(7)').innerText,
+                date: transportationRow.querySelector('td:nth-child(8)').innerText,
+            };
+
+            document.getElementById('carId').value = carId;
+            document.getElementById('goodsId').value = transportationData.goodsId;
+            document.getElementById('pickFromWar').value = pickFromWarId;
+            document.getElementById('bringToWar').value = bringToWarId;
+            document.getElementById('count').value = transportationData.count;
+            document.getElementById('date').value = transportationData.date;
+
+
+
+
+            var form = document.getElementById('createUpdateForm');
+            var actionInput = document.createElement('input');
+            actionInput.type = 'hidden';
+            actionInput.name = 'ACTION';
+            actionInput.value = 'UPDATE';
+            form.appendChild(actionInput);
+
+            var transportationIdsInput = document.createElement('input');
+            transportationIdsInput.type = 'hidden';
+            transportationIdsInput.name = 'transportationId';
+            transportationIdsInput.value = transportationId;
+            form.appendChild(transportationIdsInput);
+        } else {
+            alert("Виберіть перевезення для оновлення.");
+        }
+    });
+
+
 
 
 
@@ -259,7 +301,7 @@
     document.getElementById("showFormBtn").addEventListener("click", openModal);
 
     // При кліку на кнопку "Оновити"
-    document.querySelector('.btn-primary').addEventListener('click', function() {
+    document.getElementById("updateBtn").addEventListener('click', function () {
         // Отримати всі чекбокси
         var checkboxes = document.querySelectorAll('input[type="checkbox"]');
         // Перевірити, чи хоча б один чекбокс вибраний
@@ -279,44 +321,6 @@
     window.onclick = function(event) {
         if (event.target === modal) {
             modal.style.display = "none";
-        }
-    };
-
-    // Логіка видалення рядків аналогічна як раніше
-    document.querySelector('.btn-danger').addEventListener('click', function() {
-        var checkboxes = document.querySelectorAll('input[type="checkbox"]');
-        checkboxes.forEach(function(checkbox) {
-            if (checkbox.checked) {
-                checkbox.parentElement.parentElement.remove();
-            }
-        });
-    });
-
-    var additionalInfoModal = document.getElementById("additionalInfoModal");
-
-    // Функція, що відкриває модальне вікно з додатковою інформацією
-    function openAdditionalInfoModal() {
-        // Отримати всі чекбокси
-        var checkboxes = document.querySelectorAll('input[type="checkbox"]');
-        // Перевірити, чи хоча б один чекбокс вибраний
-        var atLeastOneChecked = false;
-        checkboxes.forEach(function(checkbox) {
-            if (checkbox.checked) {
-                atLeastOneChecked = true;
-            }
-        });
-        // Якщо хоча б один чекбокс вибраний, відкрити модальне вікно з додатковою інформацією
-        if (atLeastOneChecked) {
-            additionalInfoModal.style.display = "block";
-        }
-    }
-    // При кліку на кнопку "Додаткова Інформація"
-    document.querySelector('.btn-info').addEventListener('click', openAdditionalInfoModal);
-
-    // Закриття модального вікна з додатковою інформацією при кліку поза ним
-    window.onclick = function(event) {
-        if (event.target === additionalInfoModal) {
-            additionalInfoModal.style.display = "none";
         }
     };
 
