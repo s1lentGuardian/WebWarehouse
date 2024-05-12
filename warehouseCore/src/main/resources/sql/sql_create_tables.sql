@@ -4,7 +4,7 @@ CREATE TABLE supplier(
 	supplier_id BIGSERIAL,
 	country TEXT,
 	city TEXT,
-	phone_number VARCHAR(12) NOT NULL, 
+	phone_number VARCHAR(13) NOT NULL, 
 	
 	CONSTRAINT pk_supplier PRIMARY KEY (supplier_id)
 );
