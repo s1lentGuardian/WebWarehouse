@@ -38,15 +38,11 @@ public class CarServlet extends HttpServlet {
         String action = req.getParameter("ACTION");
 
         if ("REMOVE".equals(action)) {
-            String[] carIds = req.getParameterValues("carIds");
-            if (carIds != null) {
-                for (String carId : carIds) {
-                    String[] individualCarIds = carId.split(";");
-                    for (String individualCarId : individualCarIds) {
-                        carService.delete(Long.parseLong(individualCarId));
-                    }
-                }
+            String[] carIds = req.getParameter("carIds").split(";");
+            for (String carId : carIds) {
+                carService.delete(Long.parseLong(carId));
             }
+
         } else if ("UPDATE".equals(action)) {
             String carIdsStr = req.getParameter("carIds");
             String make = req.getParameter("make");
@@ -57,7 +53,7 @@ public class CarServlet extends HttpServlet {
 
             Set<ConstraintViolation<Car>> violations = validator.validate(car);
 
-            if(!violations.isEmpty()) {
+            if (!violations.isEmpty()) {
                 req.setAttribute("violations", violations);
                 req.getRequestDispatcher("notValid.jsp").forward(req, resp);
             } else {
@@ -72,7 +68,7 @@ public class CarServlet extends HttpServlet {
 
             Set<ConstraintViolation<Car>> violations = validator.validate(car);
 
-            if(!violations.isEmpty()) {
+            if (!violations.isEmpty()) {
                 req.setAttribute("violations", violations);
                 req.getRequestDispatcher("notValid.jsp").forward(req, resp);
             } else {
