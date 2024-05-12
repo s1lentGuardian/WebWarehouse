@@ -14,11 +14,16 @@
 <head>
     <title>Goods Page</title>
     <style>
+        .error-text {
+            color: red;
+        }
+
         body, html {
             height: 100%;
             margin: 0;
             font-family: Arial, sans-serif;
         }
+
         .container {
             display: flex;
             justify-content: center;
@@ -97,7 +102,9 @@
 <a href="homePage.html">Home</a>
 
 <div class="container">
-    <img class="top-image" src="https://img.freepik.com/premium-vector/warehouse-building-trucks-load-machines_80590-523.jpg" alt="Warehouse Image">
+    <img class="top-image"
+         src="https://img.freepik.com/premium-vector/warehouse-building-trucks-load-machines_80590-523.jpg"
+         alt="Warehouse Image">
     <br>
     <br>
     <br>
@@ -106,24 +113,42 @@
     <table>
         <thead>
         <tr>
-            <th> </th>
+            <th></th>
             <th>Айді</th>
             <th>Назва</th>
+            <th>Кількість місць</th>
+            <th>Країна</th>
             <th>Місто</th>
             <th>Адреса</th>
+            <th>Товари</th>
         </tr>
         </thead>
         <tbody>
         <%
-            for (Warehouse warehouse : warehouses)
-            {
+            for (Warehouse warehouse : warehouses) {
         %>
         <tr>
             <td><input type="checkbox" value="<%= warehouse.getWarehouseId()%>"></td>
-            <td><%= warehouse.getWarehouseId()%></td>
-            <td><%= warehouse.getName()%></td>
-            <td><%= warehouse.getCity()%></td>
-            <td><%= warehouse.getAddressLocation()%></td>
+            <td><%= warehouse.getWarehouseId()%>
+            </td>
+            <td><%= warehouse.getName()%>
+            </td>
+            <td><%= warehouse.getNumberPlaces()%>
+            </td>
+            <td><%= warehouse.getCountry()%>
+            </td>
+            <td><%= warehouse.getCity()%>
+            </td>
+            <td><%= warehouse.getAddressLocation()%>
+            </td>
+
+            <td>
+                <select>
+                    <% for (Goods goodsItem : warehouse.getGoods()) { %>
+                    <option><%= goodsItem.getName() %></option>
+                    <% } %>
+                </select>
+            </td>
         </tr>
         <%
             }
@@ -139,26 +164,28 @@
             <input id="warehouseIds" name="warehouseIds" type="hidden">
             <button type="submit" class="btn btn-danger" id="deleteBtn">Видалити</button>
         </form>
-        <button type="button" class="btn btn-primary">Оновити</button>
-        <button type="button" class="btn btn-info">Додаткова Інформація</button>
+        <button id="updateBtn" type="button" class="btn btn-primary">Оновити</button>
     </div>
 
     <div id="myModal" class="modal">
         <div class="modal-content">
-            <form method="post" action="warehouses">
+            <form id="createUpdateForm" method="post" action="warehouses">
                 <label for="warName">Назва складу</label>
                 <input id="warName" name="warName"><br>
 
                 <label for="goodsId">Айді товарів:</label>
-                <select id="goodsId" name="goodsId">
-                    <% for(Goods goodsItem : goods) { %>
-                    <option value="<%= goodsItem.getGoodsId() %>"><%= goodsItem.getName() %></option>
+                <select id="goodsId" name="goodsId" multiple>
+                    <% for (Goods goodsItem : goods) { %>
+                    <option value="<%= goodsItem.getGoodsId() %>"><%= goodsItem.getName() %>
+                    </option>
                     <% } %>
                 </select>
                 <br>
 
                 <label for="numberOfPlaces">Кількість місць</label>
-                <input id="numberOfPlaces" name="numberOfPlaces"><br>
+                <input id="numberOfPlaces" name="numberOfPlaces" aria-describedby="numberOfPlacesDescribedby">
+                <div id="numberOfPlacesDescribedby" class="form-text error-text">* Введіть число</div>
+                <br>
 
                 <label for="country">Країна</label>
                 <input id="country" name="country"><br>
@@ -173,58 +200,7 @@
             </form>
         </div>
     </div>
-    <div id="additionalInfoModal" class="modal">
-        <div class="modal-content">
-            <table width="100%" style="margin: 0 auto;">
-                <tbody>
-                <tr>
-                    <th colspan="2">Склад</th>
-                </tr>
-                <tr>
-                    <td>Кількість місць</td>
-                    <td>200</td>
-                </tr>
-                </tbody>
-            </table>
-            <table width="100%" style="margin: 0 auto;">
-                <tbody>
-                <tr>
-                    <th colspan="2">Місце знаходження</th>
-                </tr>
-                <tr>
-                    <td>Країна</td>
-                    <td>Україна</td>
-                </tr>
-                <tr>
-                    <td>Місто</td>
-                    <td>Харків</td>
-                </tr>
-                <tr>
-                    <td>Адреса</td>
-                    <td>Вулиця Петренка 4Е</td>
-                </tr>
-                </tbody>
-            </table>
-            <table width="100%" style="margin: 0 auto;">
-                <tbody>
-                <tr>
-                    <th colspan="2">Товари</th>
-                </tr>
-                <tr>
-                    <td>Тип товару</td>
-                    <td>Стиральна машинка</td>
-                </tr>
-                <tr>
-                    <td>Назва</td>
-                    <td>Bosh</td>
-                </tr>
-                </tbody>
-            </table>
-
-        </div>
-    </div>
 </div>
-
 
 
 <script>
@@ -245,8 +221,62 @@
         document.querySelector('form').submit();
     });
 
+    //UPDATE
+    document.getElementById("updateBtn").addEventListener('click', function () {
+        // Отримати всі чекбокси
+        var checkboxes = document.querySelectorAll('input[type="checkbox"]');
+        // Знайти выбранный чекбокс
+        var selectedCheckbox;
+        checkboxes.forEach(function (checkbox) {
+            if (checkbox.checked) {
+                selectedCheckbox = checkbox;
+            }
+        });
+        // Проверить, выбран ли один чекбокс
+        if (selectedCheckbox) {
+            var warehouseId = selectedCheckbox.value;
 
 
+            var warehouseRow = document.querySelector('input[value="' + warehouseId + '"]').parentNode.parentNode;
+            // Получить данные автомобиля из строки
+            var warehouseData = {
+                id: warehouseRow.querySelector('td:nth-child(2)').innerText,
+                warName: warehouseRow.querySelector('td:nth-child(3)').innerText,
+                numberOfPlaces: warehouseRow.querySelector('td:nth-child(4)').innerText,
+                country: warehouseRow.querySelector('td:nth-child(5)').innerText,
+                city: warehouseRow.querySelector('td:nth-child(6)').innerText,
+                address: warehouseRow.querySelector('td:nth-child(7)').innerText,
+                goods: Array.from(warehouseRow.querySelectorAll('td:nth-child(8)')).map(td => td.innerText)
+
+            };
+            // Отобразить данные автомобиля в модальном окне
+            document.getElementById('warName').value = warehouseData.warName;
+            document.getElementById('numberOfPlaces').value = warehouseData.numberOfPlaces;
+            document.getElementById('country').value = warehouseData.country;
+            document.getElementById('city').value = warehouseData.city;
+            document.getElementById('address').value = warehouseData.address;
+            document.getElementById('goodsId').value = warehouseData.goodsId;
+            document.getElementById('goodsId').value = warehouseData.goods.join(', ');
+
+
+            var form = document.getElementById('createUpdateForm');
+            // Создать скрытое поле для ACTION
+            var actionInput = document.createElement('input');
+            actionInput.type = 'hidden';
+            actionInput.name = 'ACTION';
+            actionInput.value = 'UPDATE';
+            form.appendChild(actionInput);
+
+            var warehouseIdsInput = document.createElement('input');
+            warehouseIdsInput.type = 'hidden';
+            warehouseIdsInput.name = 'warehouseId';
+            warehouseIdsInput.value = warehouseId;
+            // Добавить скрытое поле в форму
+            form.appendChild(warehouseIdsInput);
+        } else {
+            alert("Виберіть склад для оновлення.");
+        }
+    });
 
 
     // Оголошуємо модальне вікно як змінну, щоб мати до нього доступ
@@ -260,13 +290,13 @@
     // При кліку на кнопку "Додати товар"
     document.getElementById("showFormBtn").addEventListener("click", openModal);
 
-    // При кліку на кнопку "Оновити"
-    document.querySelector('.btn-primary').addEventListener('click', function() {
+    // При кліку на кнопку "Оновити" відкрити модальне вікно з формую
+    document.getElementById("updateBtn").addEventListener('click', function () {
         // Отримати всі чекбокси
         var checkboxes = document.querySelectorAll('input[type="checkbox"]');
         // Перевірити, чи хоча б один чекбокс вибраний
         var atLeastOneChecked = false;
-        checkboxes.forEach(function(checkbox) {
+        checkboxes.forEach(function (checkbox) {
             if (checkbox.checked) {
                 atLeastOneChecked = true;
             }
@@ -278,50 +308,21 @@
     });
 
     // Закриття модального вікна при кліку поза ним
-    window.onclick = function(event) {
+    window.onclick = function (event) {
         if (event.target === modal) {
             modal.style.display = "none";
         }
     };
 
     // Логіка видалення рядків аналогічна як раніше
-    document.querySelector('.btn-danger').addEventListener('click', function() {
+    document.querySelector('.btn-danger').addEventListener('click', function () {
         var checkboxes = document.querySelectorAll('input[type="checkbox"]');
-        checkboxes.forEach(function(checkbox) {
+        checkboxes.forEach(function (checkbox) {
             if (checkbox.checked) {
                 checkbox.parentElement.parentElement.remove();
             }
         });
     });
-
-    var additionalInfoModal = document.getElementById("additionalInfoModal");
-
-    // Функція, що відкриває модальне вікно з додатковою інформацією
-    function openAdditionalInfoModal() {
-        // Отримати всі чекбокси
-        var checkboxes = document.querySelectorAll('input[type="checkbox"]');
-        // Перевірити, чи хоча б один чекбокс вибраний
-        var atLeastOneChecked = false;
-        checkboxes.forEach(function(checkbox) {
-            if (checkbox.checked) {
-                atLeastOneChecked = true;
-            }
-        });
-        // Якщо хоча б один чекбокс вибраний, відкрити модальне вікно з додатковою інформацією
-        if (atLeastOneChecked) {
-            additionalInfoModal.style.display = "block";
-        }
-    }
-    // При кліку на кнопку "Додаткова Інформація"
-    document.querySelector('.btn-info').addEventListener('click', openAdditionalInfoModal);
-
-    // Закриття модального вікна з додатковою інформацією при кліку поза ним
-    window.onclick = function(event) {
-        if (event.target === additionalInfoModal) {
-            additionalInfoModal.style.display = "none";
-        }
-    };
-
 </script>
 </body>
 </html>
