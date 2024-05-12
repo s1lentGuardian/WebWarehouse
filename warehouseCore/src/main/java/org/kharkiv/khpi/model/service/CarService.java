@@ -17,8 +17,7 @@ public class CarService {
         return carDAO.findAllCars();
     }
 
-    public Car save(String make, String type, String plate) {
-        Car car = createCar(make, type, plate);
+    public Car save(Car car) {
         return carDAO.save(car);
     }
 
