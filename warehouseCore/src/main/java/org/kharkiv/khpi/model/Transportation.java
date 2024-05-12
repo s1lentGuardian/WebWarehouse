@@ -1,6 +1,8 @@
 package org.kharkiv.khpi.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDate;
 import java.util.HashSet;
@@ -24,7 +26,7 @@ public class Transportation {
     @JoinColumn(name = "car_id")
     public Car car;
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany()
     @JoinTable(name = "transportation_goods",
             joinColumns = @JoinColumn(name = "transportation_id", referencedColumnName = "transportation_id"),
             inverseJoinColumns = @JoinColumn(name = "goods_id", referencedColumnName = "goods_id"))
