@@ -35,8 +35,6 @@ public class LoginServlet extends HttpServlet {
             //отримання із запиту імені користувача
             String userName = req.getParameter("userName");
             String userPassword = req.getParameter("userPassword");
-            System.out.println("---------password----------");
-            System.out.println(userPassword);
 
             if (userName == null || userName.isEmpty()) {
                 //перевірка наявності імені, якщо нема - кидаємо виключення
