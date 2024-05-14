@@ -8,7 +8,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import org.kharkiv.khpi.model.UserEntity;
-import org.kharkiv.khpi.model.exception.WarehouseUserNotFoundException;
+import org.kharkiv.khpi.model.exception.UserNotFoundException;
 import org.kharkiv.khpi.model.exception.UsernamePasswordEmptyException;
 import org.kharkiv.khpi.model.service.UserService;
 
@@ -46,7 +46,7 @@ public class LoginServlet extends HttpServlet {
             UserEntity user = userService.findByUsername(userName);
 
             if (user == null) {
-                throw new WarehouseUserNotFoundException("User with such username doesn't exist");
+                throw new UserNotFoundException("User with such username doesn't exist");
             }
 
             if (!user.getPassword().equals(userPassword)) {
