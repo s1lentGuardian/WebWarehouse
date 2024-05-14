@@ -91,7 +91,7 @@
     </style>
 </head>
 <body>
-<a href="homePage.html">Home</a>
+<a href="menu">Home</a>
 
 <div class="container">
     <img class="top-image" src="https://www.avonsolutions.com/wp-content/uploads/2021/08/WAREHOUSE_MANAGEMENT-final.jpg"
@@ -125,7 +125,7 @@
     </table>
 
     <div style="display: flex; gap: 10px;">
-        <button type="button" class="btn btn-success" id="showFormBtn">Додати</button>
+        <button type="button" class="btn btn-success" id="showFormBtn" style="height: 38px">Додати</button>
 
         <form method="post" action="cars">
             <input type="hidden" name="ACTION" value="REMOVE">
@@ -133,7 +133,7 @@
             <button type="submit" class="btn btn-danger" id="deleteBtn">Видалити</button>
         </form>
 
-        <button id="updateBtn" type="button" class="btn btn-primary">Оновити</button>
+        <button id="updateBtn" type="button" class="btn btn-primary" style="height: 38px">Оновити</button>
     </div>
 
     <div id="myModal" class="modal">
