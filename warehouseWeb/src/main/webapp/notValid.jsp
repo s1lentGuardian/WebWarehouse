@@ -9,7 +9,7 @@
     <title>Not Valid</title>
 </head>
 <body>
-<a href="homePage.html">Home</a>
+<a href="menu">Home</a>
 <br>
 <br>
 <p1>Validation Errors:</p1>
