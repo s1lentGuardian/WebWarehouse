@@ -12,7 +12,8 @@
 %>
 <html lang="en">
 <head>
-    <title>Goods Page</title>
+    <title>Warehouse Page</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <style>
         .error-text {
             color: red;
@@ -34,6 +35,7 @@
         }
 
         table {
+            background-color: #fdfcfc;
             border-collapse: collapse;
             width: 80%;
             margin-bottom: 30px;
@@ -96,7 +98,6 @@
             z-index: -1;
         }
     </style>
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
 <a href="homePage.html">Home</a>
@@ -156,7 +157,7 @@
         </tbody>
     </table>
 
-    <div class="btn-group">
+    <div style="display: flex; gap: 10px;">
         <button type="submit" class="btn btn-success" id="showFormBtn">Додати</button>
 
         <form method="post" action="warehouses">
