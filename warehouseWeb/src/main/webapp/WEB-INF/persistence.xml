@@ -15,6 +15,7 @@
         <class>org.kharkiv.khpi.model.Supplier</class>
         <class>org.kharkiv.khpi.model.Warehouse</class>
         <class>org.kharkiv.khpi.model.Transportation</class>
+        <class>org.kharkiv.khpi.model.UserEntity</class>
         <!-- Список усіх класів сутностей проєкту -->
 
         <properties>
