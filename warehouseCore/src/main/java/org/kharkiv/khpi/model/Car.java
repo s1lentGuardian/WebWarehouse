@@ -15,6 +15,7 @@ public class Car {
     @Column(name = "car_id")
     private Long carId;
 
+    @NotEmpty(message = "Make cannot be empty")
     @Column(name = "make")
     private String make;
 
