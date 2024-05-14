@@ -5,7 +5,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
 import org.kharkiv.khpi.model.UserEntity;
-import org.kharkiv.khpi.model.exception.WarehouseUserNotFoundException;
+import org.kharkiv.khpi.model.exception.UserNotFoundException;
 
 @Stateless
 public class UserDao {
@@ -36,7 +36,7 @@ public class UserDao {
         try {
             return entityManager.find(UserEntity.class, id);
         } catch (NoResultException e) {
-            throw new WarehouseUserNotFoundException("User with such id doesn't exist");
+            throw new UserNotFoundException("User with such id doesn't exist");
         }
     }
 
