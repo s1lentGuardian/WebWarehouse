@@ -4,12 +4,16 @@ import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.TypedQuery;
 import org.kharkiv.khpi.model.Car;
 import org.kharkiv.khpi.model.Transportation;
+import org.kharkiv.khpi.model.Warehouse;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -20,6 +24,15 @@ public class TransportationDAO {
 
     @PersistenceContext
     private EntityManager entityManager;
+
+    public List<Transportation> findAllTransportations() {
+        try {
+            TypedQuery<Transportation> query = entityManager.createQuery("SELECT t FROM Transportation t", Transportation.class);
+            return query.getResultList();
+        } catch (NoResultException e) {
+            return new ArrayList<>();
+        }
+    }
 
     /**
      * Пошук сутності за первинним ключем

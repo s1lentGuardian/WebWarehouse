@@ -4,9 +4,14 @@ import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.TypedQuery;
+import org.eclipse.persistence.internal.sessions.factories.model.platform.SunAS9PlatformConfig;
+import org.kharkiv.khpi.model.Goods;
 import org.kharkiv.khpi.model.Supplier;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -17,6 +22,15 @@ public class SupplierDAO {
 
     @PersistenceContext
     private EntityManager entityManager;
+
+    public List<Supplier> findAllSuppliers() {
+        try {
+            TypedQuery<Supplier> query = entityManager.createQuery("SELECT s FROM Supplier s", Supplier.class);
+            return query.getResultList();
+        } catch (NoResultException e) {
+            return new ArrayList<>();
+        }
+    }
 
     /**
      * Пошук сутності за первинним ключем
@@ -59,7 +73,11 @@ public class SupplierDAO {
     @ return створена або збережена сутність
      */
     public Supplier save(Supplier supplier) {
-        entityManager.persist(supplier);
+        if(supplier.getSupplierId() == null)
+            entityManager.persist(supplier);
+        else
+            entityManager.merge(supplier);
+
         return supplier;
     }
 

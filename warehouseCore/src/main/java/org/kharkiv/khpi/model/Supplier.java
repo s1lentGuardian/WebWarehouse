@@ -1,6 +1,8 @@
 package org.kharkiv.khpi.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Pattern;
 
 @Entity
 @Table(name = "supplier")
@@ -14,11 +16,23 @@ public class Supplier {
     @Column(name = "country")
     private String country;
 
+    @NotEmpty(message = "City cannot be empty")
     @Column(name = "city")
     private String city;
 
+    @NotEmpty(message = "The phone number cannot be empty")
+    @Pattern(regexp = "^[\\+]?[(]?[0-9]{3}[)]?[-\\s\\.]?[0-9]{3}[-\\s\\.]?[0-9]{4,6}$", message = "The phone number can start with + and have a maximum of 12 digits and minimum of 10 digits")
     @Column(name = "phone_number")
     private String phoneNumber;
+
+    public Supplier() {
+    }
+
+    public Supplier(String country, String city, String phoneNumber) {
+        this.country = country;
+        this.city = city;
+        this.phoneNumber = phoneNumber;
+    }
 
     public Long getSupplierId() {
         return supplierId;

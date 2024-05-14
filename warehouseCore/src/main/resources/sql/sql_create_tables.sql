@@ -4,7 +4,7 @@ CREATE TABLE supplier(
 	supplier_id BIGSERIAL,
 	country TEXT,
 	city TEXT,
-	phone_number VARCHAR(12) NOT NULL, 
+	phone_number VARCHAR(13) NOT NULL, 
 	
 	CONSTRAINT pk_supplier PRIMARY KEY (supplier_id)
 );
@@ -64,6 +64,7 @@ CREATE TABLE transportation(
 	car_id INTEGER,
 	pick_up_from_warehouse_id INTEGER,
 	bring_to_warehouse_id INTEGER,
+	goods_count INTEGER,
 	date TIMESTAMP,
 	
 	CONSTRAINT pk_transportation PRIMARY KEY (transportation_id),

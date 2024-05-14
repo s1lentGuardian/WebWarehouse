@@ -1,12 +1,15 @@
 package org.kharkiv.khpi.model.repository;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.TypedQuery;
 import org.kharkiv.khpi.model.Car;
 
 /**
@@ -17,6 +20,15 @@ public class CarDAO {
 
     @PersistenceContext
     private EntityManager entityManager;
+
+    public List<Car> findAllCars() {
+        try {
+            TypedQuery<Car> query = entityManager.createQuery("SELECT c FROM Car c", Car.class);
+            return query.getResultList();
+        } catch (NoResultException e) {
+            return new ArrayList<>();
+        }
+    }
 
     /**
      * Пошук сутності за первинним ключем
@@ -59,7 +71,11 @@ public class CarDAO {
     @ return створена або збережена сутність
      */
     public Car save(Car car) {
-        entityManager.persist(car);
+        if(car.getId() == null)
+            entityManager.persist(car);
+        else
+            entityManager.merge(car);
+
         return car;
     }
 

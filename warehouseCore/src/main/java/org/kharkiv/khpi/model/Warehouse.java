@@ -1,6 +1,9 @@
 package org.kharkiv.khpi.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Digits;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Pattern;
 
 import java.util.HashSet;
 import java.util.Objects;
@@ -15,26 +18,41 @@ public class Warehouse {
     @Column(name = "warehouse_id")
     private Long warehouseId;
 
+    @NotEmpty(message = "Name cannot be empty")
     @Column(name = "name")
     private String name;
 
+    @NotEmpty(message = "Number places cannot be empty")
     @Column(name = "number_places")
     private Long numberPlaces;
 
     @Column(name = "country")
     private String country;
 
+    @NotEmpty(message = "City cannot be empty")
     @Column(name = "city")
     private String city;
 
+    @NotEmpty(message = "Address Location cannot be empty")
     @Column(name = "address_location")
     private String addressLocation;
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany()
     @JoinTable(name = "warehouse_of_goods",
             joinColumns = @JoinColumn(name = "warehouse_id", referencedColumnName = "warehouse_id"),
             inverseJoinColumns = @JoinColumn(name = "goods_id", referencedColumnName = "goods_id"))
     private Set<Goods> goods = new HashSet<>();
+
+    public Warehouse(String name, Long numberPlaces, String country, String city, String addressLocation) {
+        this.name = name;
+        this.numberPlaces = numberPlaces;
+        this.country = country;
+        this.city = city;
+        this.addressLocation = addressLocation;
+    }
+
+    public Warehouse() {
+    }
 
     public Long getWarehouseId() {
         return warehouseId;

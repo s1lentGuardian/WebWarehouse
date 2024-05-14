@@ -4,9 +4,11 @@ import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.TypedQuery;
 import org.kharkiv.khpi.model.Goods;
 import org.kharkiv.khpi.model.Warehouse;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,6 +21,15 @@ public class WarehouseDAO {
 
     @PersistenceContext
     private EntityManager entityManager;
+
+    public List<Warehouse> findAllWarehouses() {
+        try {
+            TypedQuery<Warehouse> query = entityManager.createQuery("SELECT w FROM Warehouse w", Warehouse.class);
+            return query.getResultList();
+        } catch (NoResultException e) {
+            return new ArrayList<>();
+        }
+    }
 
     /**
      * Пошук сутності за первинним ключем
