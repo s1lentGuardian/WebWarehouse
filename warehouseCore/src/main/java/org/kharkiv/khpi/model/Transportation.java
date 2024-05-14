@@ -1,8 +1,6 @@
 package org.kharkiv.khpi.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDate;
 import java.util.HashSet;
@@ -43,7 +41,7 @@ public class Transportation {
     @Column(name = "goods_count")
     private Integer count;
 
-    @Column(name = "date")
+    @Column(name = "transportation_date")
     private LocalDate date;
 
     public Long getTransportationId() {
