@@ -54,7 +54,7 @@ CREATE TABLE car(
 	car_id BIGSERIAL,
 	make TEXT,
 	type_of_car TEXT,
-	license_plate_number VARCHAR(9) NOT NULL,
+	license_plate_number VARCHAR(9) NOT NULL UNIQUE,
 	
 	CONSTRAINT pk_car PRIMARY KEY (car_id)
 );
@@ -65,7 +65,7 @@ CREATE TABLE transportation(
 	pick_up_from_warehouse_id INTEGER,
 	bring_to_warehouse_id INTEGER,
 	goods_count INTEGER,
-	date TIMESTAMP,
+	transportation_date DATE,
 	
 	CONSTRAINT pk_transportation PRIMARY KEY (transportation_id),
 	
@@ -96,4 +96,12 @@ CREATE TABLE transportation_goods(
 	CONSTRAINT fk_goods_transportation_goods FOREIGN KEY (goods_id) REFERENCES goods (goods_id)
 	ON DELETE CASCADE
 	ON UPDATE CASCADE
+);
+
+CREATE TABLE user_warehouse(
+	user_id Bigserial,
+	username VARCHAR(20) NOT NULL UNIQUE,
+	password VARCHAR(20) NOT NULL,
+	
+	CONSTRAINT pk_user PRIMARY KEY (user_id)
 );
