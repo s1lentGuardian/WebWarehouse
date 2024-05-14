@@ -12,6 +12,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Goods Page</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <style>
         body, html {
             height: 100%;
@@ -90,7 +91,6 @@
             z-index: -1;
         }
     </style>
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
 <a href="homePage.html">Home</a>
@@ -132,7 +132,7 @@
         </tbody>
     </table>
 
-    <div class="btn-group">
+    <div style="display: flex; gap: 10px;">
         <button type="button" class="btn btn-success" id="showFormBtn">Додати</button>
 
         <form method="post" action="goods">
