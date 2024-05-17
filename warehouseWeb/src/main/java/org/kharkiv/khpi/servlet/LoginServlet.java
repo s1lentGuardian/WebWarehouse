@@ -61,16 +61,16 @@ public class LoginServlet extends HttpServlet {
 
         /* отримання диспетчера запитів для сервлета меню із запиту
          * Примітка: тут ми можемо використовувати відносні шляхи. */
-        RequestDispatcher rd = req.getRequestDispatcher("menu");
+//        RequestDispatcher rd = req.getRequestDispatcher("menu");
 
 //        /*перенаправлення запиту до сервлету меню. URL в адресному рядку
 //         * при цьому не змінюється. Може призводити до проблем, якщо користувач
 //         * оновлюватиме сторінку */
-        rd.forward(req, resp);
+//        rd.forward(req, resp);
 
         /* Інший варіант перенаправлення користувача на сервлет статистики.
          * Тут URL в адресному рядку змінюється. */
-//		resp.sendRedirect("menu");
+		resp.sendRedirect(req.getContextPath() + "/menu");
 
     }
 }
