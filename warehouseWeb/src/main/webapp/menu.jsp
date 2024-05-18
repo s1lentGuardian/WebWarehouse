@@ -72,7 +72,10 @@
 <div class="container">
     <a href="https://cdn-icons-png.flaticon.com/512/149/149071.png"><img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" class="icon-img"></a>
     <div class="username"><%= user %></div>
-    <a href="logout" class="logout-btn"><button type="button" class="btn btn-outline-primary">Logout</button></a>
+    <form action="logout" method="get">
+        <input type="hidden" name="logout" value="true">
+        <button class="btn btn-outline-primary logout-btn" type="submit">Logout</button>
+    </form>
     <div class="links">
         <a href="suppliers"><button type="button" class="btn btn-primary">Suppliers</button></a>
         <a href="goods"><button type="button" class="btn btn-primary">Goods</button></a>
