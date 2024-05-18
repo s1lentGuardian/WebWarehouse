@@ -138,7 +138,7 @@
         <location>/error500.html</location>
     </error-page>
     <error-page>
-        <exception-type>org.kharkiv.khpi.model.exception.UserNotFoundException</exception-type>
-        <location>/error404.html</location>
+        <exception-type>org.kharkiv.khpi.model.exception.UserInvalidPasswordException</exception-type>
+        <location>/error400.html</location>
     </error-page>
 </web-app>
