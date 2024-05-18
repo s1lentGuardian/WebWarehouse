@@ -7,7 +7,6 @@ import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
 import org.kharkiv.khpi.model.Car;
 import org.kharkiv.khpi.model.Transportation;
-import org.kharkiv.khpi.model.Warehouse;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;

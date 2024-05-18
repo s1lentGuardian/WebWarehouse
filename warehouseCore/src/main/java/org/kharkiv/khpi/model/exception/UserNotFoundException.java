@@ -3,9 +3,9 @@ package org.kharkiv.khpi.model.exception;
 import jakarta.ejb.ApplicationException;
 
 @ApplicationException
-public class WarehouseNumberFormatException extends RuntimeException{
+public class UserNotFoundException extends RuntimeException{
 
-    public WarehouseNumberFormatException(String message) {
+    public UserNotFoundException(String message) {
         super(message);
     }
 }

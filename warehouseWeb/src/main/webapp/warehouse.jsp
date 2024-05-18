@@ -100,7 +100,7 @@
     </style>
 </head>
 <body>
-<a href="homePage.html">Home</a>
+<a href="menu">Home</a>
 
 <div class="container">
     <img class="top-image"
@@ -158,14 +158,14 @@
     </table>
 
     <div style="display: flex; gap: 10px;">
-        <button type="submit" class="btn btn-success" id="showFormBtn">Додати</button>
+        <button type="submit" class="btn btn-success" id="showFormBtn" style="height: 38px">Додати</button>
 
         <form method="post" action="warehouses">
             <input type="hidden" name="ACTION" value="REMOVE">
             <input id="warehouseIds" name="warehouseIds" type="hidden">
             <button type="submit" class="btn btn-danger" id="deleteBtn">Видалити</button>
         </form>
-        <button id="updateBtn" type="button" class="btn btn-primary">Оновити</button>
+        <button id="updateBtn" type="button" class="btn btn-primary" style="height: 38px">Оновити</button>
     </div>
 
     <div id="myModal" class="modal">
