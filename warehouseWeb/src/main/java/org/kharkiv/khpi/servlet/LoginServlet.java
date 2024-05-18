@@ -1,16 +1,12 @@
 package org.kharkiv.khpi.servlet;
 
 import jakarta.inject.Inject;
-import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import org.kharkiv.khpi.model.UserEntity;
-import org.kharkiv.khpi.model.exception.UserNotFoundException;
-import org.kharkiv.khpi.model.exception.UsernamePasswordEmptyException;
-import org.kharkiv.khpi.model.service.UserService;
+import org.kharkiv.khpi.model.service.LoginService;
 
 import java.io.IOException;
 
@@ -18,7 +14,7 @@ public class LoginServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
     @Inject
-    private UserService userService;
+    private LoginService loginService;
 
     public LoginServlet() {
         super();
@@ -36,20 +32,7 @@ public class LoginServlet extends HttpServlet {
             String userName = req.getParameter("userName");
             String userPassword = req.getParameter("userPassword");
 
-            if (userName == null || userName.isEmpty()) {
-                //перевірка наявності імені, якщо нема - кидаємо виключення
-                throw new UsernamePasswordEmptyException();
-            }
-
-            UserEntity user = userService.findByUsername(userName);
-
-            if (user == null) {
-                throw new UserNotFoundException("User with such username doesn't exist");
-            }
-
-            if (!user.getPassword().equals(userPassword)) {
-                throw new UsernamePasswordEmptyException();
-            }
+            loginService.login(userName, userPassword);
 
             //створення сесії
             session = req.getSession();
