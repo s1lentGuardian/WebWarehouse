@@ -26,7 +26,7 @@ public class SecurityFilter extends HttpFilter {
         HttpSession session = req.getSession(false);
 
         if (session == null) {
-            res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate"); // Цей заголовок каже браузере не кешувати відповідь.
+            res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate"); // Цей заголовок каже браузере не кешувати відповідь. Це для того щоб не з'являлася сторінка логування після переходу на різні ресурси після успішного логування
             RequestDispatcher rd = req.getRequestDispatcher("login.html");
             rd.forward(req, res);
         } else {
